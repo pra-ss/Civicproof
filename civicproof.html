@@ -1,0 +1,3923 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>CivicProof — Proof Before "Resolved"</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --ink:#17172A;
+  --ink-soft:#292942;
+  --muted:#68687F;
+  --faint:#9696AA;
+
+  --pink:#D6336C;
+  --pink-dark:#B92357;
+
+  --purple:#6741D9;
+  --purple-dark:#5531C5;
+
+  --teal:#0CA678;
+  --teal-dark:#087F5B;
+
+  --amber:#E8590C;
+
+  --tint-pink:#FFF0F5;
+  --tint-purple:#F1EDFF;
+  --tint-teal:#E8FAF3;
+  --tint-amber:#FFF3E8;
+  --tint-neutral:#F6F5FA;
+
+  --border:#EAE8F2;
+  --border-dark:#DDD9E8;
+
+  --white:#FFFFFF;
+  --page:#FBFAFD;
+
+  --ring:rgba(103,65,217,.18);
+
+  --shadow-sm:
+    0 1px 2px rgba(23,23,42,.04),
+    0 3px 8px rgba(23,23,42,.03);
+
+  --shadow-md:
+    0 5px 15px rgba(23,23,42,.06),
+    0 18px 40px rgba(23,23,42,.07);
+
+  --shadow-lg:
+    0 12px 28px rgba(23,23,42,.08),
+    0 30px 60px rgba(23,23,42,.08);
+}
+
+
+/* ============================================================
+   BASE
+============================================================ */
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+
+  font-family:'Inter','Segoe UI',Arial,sans-serif;
+  color:var(--ink);
+
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(214,51,108,.075),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(103,65,217,.085),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      #FFFFFF 0%,
+      var(--page) 42%,
+      #FCFBFE 100%
+    );
+
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+
+  background-image:
+    linear-gradient(
+      rgba(103,65,217,.018) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(103,65,217,.018) 1px,
+      transparent 1px
+    );
+
+  background-size:42px 42px;
+
+  mask-image:linear-gradient(
+    to bottom,
+    black,
+    transparent 75%
+  );
+}
+
+
+/* ============================================================
+   TYPOGRAPHY
+============================================================ */
+
+.font-serif-brand{
+  font-family:'Fraunces',Georgia,serif;
+  letter-spacing:-.025em;
+}
+
+.mono{
+  font-family:'JetBrains Mono',Consolas,monospace;
+  letter-spacing:-.025em;
+}
+
+::selection{
+  background:#E9E2FF;
+  color:var(--purple);
+}
+
+
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+
+::-webkit-scrollbar{
+  width:9px;
+  height:9px;
+}
+
+::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#DDD9E8;
+  border-radius:20px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:#C9C3DB;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+
+/* ============================================================
+   GLOBAL INTERACTIONS
+============================================================ */
+
+a,
+button,
+input,
+select,
+textarea{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+
+button:active{
+  transform:translateY(1px);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible{
+  outline:none !important;
+
+  border-color:var(--purple) !important;
+
+  box-shadow:
+    0 0 0 4px var(--ring),
+    0 2px 5px rgba(23,23,42,.04) !important;
+}
+
+input,
+select,
+textarea{
+  background:#fff;
+
+  border-color:var(--border) !important;
+
+  transition:
+    border-color .18s ease,
+    box-shadow .18s ease,
+    background .18s ease,
+    transform .18s ease;
+}
+
+input:hover,
+select:hover,
+textarea:hover{
+  border-color:#C9C5D8 !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  background:#fff;
+  border-color:var(--purple) !important;
+}
+
+::placeholder{
+  color:#B6B3C4;
+}
+
+
+/* ============================================================
+   HEADER
+============================================================ */
+
+header{
+  background:rgba(255,255,255,.88) !important;
+
+  border-bottom:
+    1px solid rgba(234,232,242,.85) !important;
+
+  box-shadow:
+    0 1px 0 rgba(23,23,42,.02),
+    0 8px 25px rgba(23,23,42,.025) !important;
+}
+
+header > div{
+  min-height:66px;
+}
+
+header .w-8{
+  width:38px;
+  height:38px;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(12,166,120,.10),
+    0 4px 12px rgba(12,166,120,.10);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+header .w-8:hover{
+  transform:rotate(-4deg) scale(1.04);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(12,166,120,.15),
+    0 7px 18px rgba(12,166,120,.16);
+}
+
+header .font-serif-brand{
+  font-size:20px;
+  line-height:1;
+}
+
+header .mono{
+  font-size:9px;
+  letter-spacing:.01em;
+  text-transform:uppercase;
+}
+
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+
+#tab-nav{
+  background:#F5F4F8 !important;
+
+  border:1px solid #ECEAF1;
+
+  box-shadow:
+    inset 0 1px 1px rgba(23,23,42,.025),
+    0 1px 2px rgba(23,23,42,.025);
+
+  padding:4px !important;
+}
+
+#tab-nav .tab-btn{
+  position:relative;
+
+  border-radius:999px;
+
+  padding:8px 15px;
+
+  color:var(--muted) !important;
+
+  font-size:12px;
+  font-weight:600;
+
+  transition:
+    color .2s ease,
+    background .2s ease,
+    box-shadow .2s ease,
+    transform .15s ease;
+}
+
+#tab-nav .tab-btn:hover:not([data-active="true"]){
+  background:rgba(255,255,255,.8) !important;
+  color:var(--ink) !important;
+}
+
+#tab-nav .tab-btn[data-active="true"]{
+  background:var(--ink) !important;
+  color:#fff !important;
+
+  box-shadow:
+    0 3px 8px rgba(23,23,42,.16),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+
+/* ============================================================
+   MAIN AREA
+============================================================ */
+
+#app{
+  position:relative;
+  min-height:620px;
+}
+
+#app > div:first-child{
+  animation:pageEnter .38s cubic-bezier(.2,.75,.25,1);
+}
+
+@keyframes pageEnter{
+
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+}
+
+
+/* ============================================================
+   HEADINGS
+============================================================ */
+
+#app h2{
+  color:var(--ink);
+  letter-spacing:-.035em;
+}
+
+#app h2.font-serif-brand{
+  font-size:30px;
+  line-height:1.1;
+}
+
+#app h2 + p{
+  color:var(--muted) !important;
+  max-width:650px;
+  line-height:1.65;
+}
+
+
+/* ============================================================
+   CARDS
+============================================================ */
+
+.card{
+  position:relative;
+
+  border:
+    1px solid rgba(234,232,242,.95) !important;
+
+  border-radius:18px !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.99),
+      rgba(252,251,254,.97)
+    ) !important;
+
+  box-shadow:var(--shadow-sm) !important;
+
+  transition:
+    transform .22s cubic-bezier(.2,.75,.25,1),
+    box-shadow .22s ease,
+    border-color .22s ease;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+
+  border-color:#E1DDEE !important;
+
+  box-shadow:var(--shadow-md) !important;
+}
+
+.card::before{
+  content:"";
+
+  position:absolute;
+
+  top:0;
+  left:18px;
+  right:18px;
+
+  height:1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(103,65,217,.12),
+      transparent
+    );
+
+  pointer-events:none;
+}
+
+
+/* ============================================================
+   FORMS
+============================================================ */
+
+form.card{
+  box-shadow:
+    0 1px 2px rgba(23,23,42,.04),
+    0 14px 34px rgba(23,23,42,.055) !important;
+}
+
+form.card:hover{
+  transform:none;
+}
+
+label{
+  letter-spacing:.045em;
+  font-size:10px !important;
+  font-weight:700 !important;
+}
+
+textarea,
+input,
+select{
+  border-radius:10px !important;
+  min-height:40px;
+}
+
+textarea{
+  resize:vertical;
+  line-height:1.55;
+}
+
+select{
+  appearance:none;
+
+  background-image:
+    linear-gradient(
+      45deg,
+      transparent 50%,
+      #9290A3 50%
+    ),
+    linear-gradient(
+      135deg,
+      #9290A3 50%,
+      transparent 50%
+    );
+
+  background-position:
+    calc(100% - 16px) 17px,
+    calc(100% - 11px) 17px;
+
+  background-size:
+    5px 5px,
+    5px 5px;
+
+  background-repeat:no-repeat;
+
+  padding-right:35px !important;
+}
+
+
+/* ============================================================
+   FILE INPUT
+============================================================ */
+
+input[type=file]{
+  min-height:42px;
+
+  padding:6px;
+
+  border:
+    1px dashed #DCD9E7 !important;
+
+  background:#FAF9FC;
+
+  border-radius:10px !important;
+}
+
+input[type=file]:hover{
+  border-color:#BFB8D8 !important;
+  background:#F8F6FC;
+}
+
+input[type=file]::file-selector-button{
+  border:0;
+
+  background:var(--tint-purple);
+
+  color:var(--purple);
+
+  padding:8px 13px;
+
+  border-radius:8px;
+
+  font-size:11px;
+  font-weight:700;
+
+  cursor:pointer;
+
+  margin-right:10px;
+
+  transition:
+    background .15s ease,
+    transform .15s ease;
+}
+
+input[type=file]::file-selector-button:hover{
+  background:#E3DBFA;
+  transform:translateY(-1px);
+}
+
+
+/* ============================================================
+   PRIMARY BUTTONS
+============================================================ */
+
+.btn-solid{
+  position:relative;
+  overflow:hidden;
+
+  border:0;
+
+  box-shadow:
+    0 2px 4px rgba(23,23,42,.10),
+    0 7px 18px rgba(23,23,42,.08) !important;
+
+  transition:
+    transform .16s ease,
+    filter .16s ease,
+    box-shadow .16s ease;
+}
+
+.btn-solid::after{
+  content:"";
+
+  position:absolute;
+
+  top:0;
+  left:-120%;
+
+  width:70%;
+  height:100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.22),
+      transparent
+    );
+
+  transform:skewX(-18deg);
+
+  transition:left .55s ease;
+}
+
+.btn-solid:hover{
+  filter:brightness(1.04);
+
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 5px 10px rgba(23,23,42,.12),
+    0 12px 25px rgba(23,23,42,.10) !important;
+}
+
+.btn-solid:hover::after{
+  left:150%;
+}
+
+
+/* ============================================================
+   BADGES
+============================================================ */
+
+.inline-flex.items-center{
+  box-shadow:
+    inset 0 0 0 1px rgba(23,23,42,.025);
+}
+
+.dot{
+  width:6px;
+  height:6px;
+
+  border-radius:50%;
+
+  margin-right:7px;
+
+  vertical-align:middle;
+
+  box-shadow:
+    0 0 0 3px rgba(0,0,0,.025);
+}
+
+
+/* ============================================================
+   COMPLAINT CARDS
+============================================================ */
+
+[data-complaint]{
+  overflow:hidden;
+}
+
+[data-complaint] .mono{
+  font-weight:600;
+  letter-spacing:-.035em;
+}
+
+[data-complaint] img{
+  border:
+    1px solid var(--border);
+
+  box-shadow:var(--shadow-sm);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+[data-complaint] img:hover{
+  transform:scale(1.04);
+  box-shadow:var(--shadow-md);
+}
+
+[data-complaint] .font-semibold{
+  color:var(--ink-soft);
+}
+
+
+/* ============================================================
+   DETAILS / TIMELINE
+============================================================ */
+
+details{
+  border-radius:10px;
+}
+
+details summary{
+  display:flex;
+  align-items:center;
+
+  padding:6px 8px;
+
+  margin-left:-8px;
+
+  border-radius:8px;
+
+  transition:
+    background .15s ease,
+    color .15s ease;
+}
+
+details summary:hover{
+  background:#F7F5FB;
+  color:var(--purple) !important;
+}
+
+details summary::after{
+  content:'›';
+
+  display:inline-block;
+
+  margin-left:5px;
+
+  font-size:16px;
+  line-height:1;
+
+  transition:transform .2s ease;
+}
+
+details[open] summary::after{
+  transform:rotate(90deg);
+}
+
+details .border-l-2{
+  border-color:#EAE7F1 !important;
+}
+
+
+/* ============================================================
+   OFFICER DASHBOARD
+============================================================ */
+
+[data-accept]{
+  box-shadow:
+    0 3px 8px rgba(103,65,217,.16);
+}
+
+[data-accept]:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.05);
+}
+
+[data-resolve]{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(250,249,253,.8),
+      rgba(255,255,255,.7)
+    );
+
+  border-radius:14px;
+}
+
+[data-resolve] input,
+[data-resolve] textarea{
+  background:#fff;
+}
+
+
+/* ============================================================
+   FEEDBACK BUTTONS
+============================================================ */
+
+[data-feedback]{
+  border:1px solid transparent;
+
+  transition:
+    transform .16s ease,
+    box-shadow .16s ease,
+    border-color .16s ease;
+}
+
+[data-feedback]:hover{
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 5px 12px rgba(23,23,42,.08);
+}
+
+[data-feedback="fixed"]:hover{
+  border-color:#A9E6D0;
+}
+
+[data-feedback="partial"]:hover{
+  border-color:#F5C99F;
+}
+
+[data-feedback="unresolved"]:hover{
+  border-color:#F1B4C8;
+}
+
+
+/* ============================================================
+   PUBLIC VERIFY
+============================================================ */
+
+#verify-search{
+  height:44px;
+  background:#fff;
+}
+
+#verify-btn{
+  min-width:90px;
+
+  transition:
+    transform .16s ease,
+    box-shadow .16s ease,
+    background .16s ease;
+}
+
+#verify-btn:hover{
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 7px 18px rgba(23,23,42,.16);
+}
+
+#verify-result{
+  animation:receiptIn .35s ease both;
+}
+
+@keyframes receiptIn{
+
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+}
+
+#verify-result .card{
+  overflow:hidden;
+}
+
+#verify-result .card::after{
+  content:"";
+
+  position:absolute;
+
+  width:180px;
+  height:180px;
+
+  right:-80px;
+  top:-80px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(103,65,217,.07),
+      transparent 65%
+    );
+
+  pointer-events:none;
+}
+
+#verify-result .rounded-lg.py-2.text-center{
+  letter-spacing:.08em;
+  font-size:10px;
+}
+
+
+/* ============================================================
+   ARCHITECTURE
+============================================================ */
+
+#app .rounded-xl{
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+#app .rounded-xl:hover{
+  transform:translateX(4px);
+  box-shadow:var(--shadow-sm);
+}
+
+#tamper-controls{
+  background:#FAF9FC;
+
+  border:
+    1px solid #ECE9F2;
+
+  border-radius:14px;
+
+  padding:14px;
+}
+
+#tamper-controls .mono{
+  font-weight:600;
+}
+
+#tamper-text{
+  background:#fff;
+}
+
+#tamper-btn{
+  transition:
+    transform .16s ease,
+    filter .16s ease,
+    box-shadow .16s ease;
+}
+
+#tamper-btn:hover{
+  transform:translateY(-2px);
+
+  filter:brightness(1.05);
+
+  box-shadow:
+    0 7px 18px rgba(232,89,12,.16);
+}
+
+
+/* ============================================================
+   TOASTS
+============================================================ */
+
+#toast-root{
+  width:min(380px,calc(100vw - 32px));
+}
+
+.toast{
+  position:relative;
+
+  border:
+    1px solid rgba(255,255,255,.65);
+
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+
+  box-shadow:
+    0 10px 30px rgba(23,23,42,.14),
+    0 2px 5px rgba(23,23,42,.06);
+
+  animation:
+    toastIn .28s cubic-bezier(.2,.8,.3,1),
+    toastOut .3s ease 2.9s forwards;
+}
+
+@keyframes toastIn{
+
+  from{
+    opacity:0;
+    transform:translateY(-12px) scale(.96);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+
+}
+
+@keyframes toastOut{
+
+  to{
+    opacity:0;
+    transform:translateY(-8px) scale(.98);
+  }
+
+}
+
+
+/* ============================================================
+   FOOTER
+============================================================ */
+
+footer{
+  margin-top:20px;
+
+  border-top:
+    1px solid rgba(234,232,242,.75);
+
+  color:#9B99AA !important;
+}
+
+footer span:last-child{
+  color:#AAA7B7;
+}
+
+
+/* ============================================================
+   EMPTY STATES
+============================================================ */
+
+.text-gray-400.italic{
+  padding:28px;
+
+  text-align:center;
+
+  border:
+    1px dashed #E2DFEA;
+
+  border-radius:14px;
+
+  background:rgba(255,255,255,.55);
+
+  color:#AAA7B8 !important;
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media(max-width:900px){
+
+  header > div{
+    padding-left:18px !important;
+    padding-right:18px !important;
+  }
+
+  #app{
+    padding-left:18px !important;
+    padding-right:18px !important;
+  }
+
+}
+
+
+@media(max-width:640px){
+
+  header > div{
+    flex-direction:column;
+    align-items:stretch !important;
+    gap:14px;
+  }
+
+  header .flex.items-center.gap-2\.5{
+    justify-content:center;
+  }
+
+  #tab-nav{
+    width:100%;
+
+    justify-content:space-between;
+
+    overflow-x:auto;
+
+    scrollbar-width:none;
+  }
+
+  #tab-nav::-webkit-scrollbar{
+    display:none;
+  }
+
+  #tab-nav .tab-btn{
+    flex:1;
+
+    white-space:nowrap;
+
+    padding:8px 10px;
+
+    font-size:11px;
+  }
+
+  #app{
+    padding-top:28px !important;
+    padding-bottom:30px !important;
+  }
+
+  #app h2.font-serif-brand{
+    font-size:26px;
+  }
+
+  .card{
+    border-radius:15px !important;
+  }
+
+  [data-feedback]{
+    min-height:40px;
+  }
+
+  #verify-search{
+    min-width:0;
+  }
+
+  #verify-result .card{
+    width:100%;
+  }
+
+  footer{
+    flex-direction:column;
+
+    gap:8px;
+
+    padding-left:18px !important;
+    padding-right:18px !important;
+  }
+
+}
+
+
+/* ============================================================
+   ACCESSIBILITY
+============================================================ */
+
+@media(prefers-reduced-motion:reduce){
+
+  *,
+  *::before,
+  *::after{
+    scroll-behavior:auto !important;
+
+    animation-duration:.01ms !important;
+
+    animation-iteration-count:1 !important;
+
+    transition-duration:.01ms !important;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body class="min-h-screen">
+
+<!-- ============================================================
+     TOAST
+============================================================ -->
+
+<div
+  id="toast-root"
+  class="fixed top-4 right-4 z-50 flex flex-col gap-2">
+</div>
+
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+
+<header
+  class="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-md z-40"
+  style="box-shadow:0 1px 0 rgba(27,27,47,.03)"
+>
+
+  <div
+    class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between"
+  >
+
+    <div class="flex items-center gap-2.5">
+
+      <div
+        class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+        style="background:var(--tint-teal)"
+      >
+
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#0CA678"
+          stroke-width="2"
+        >
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+
+      </div>
+
+      <div class="leading-none">
+
+        <span
+          class="font-serif-brand font-bold text-lg block"
+        >
+          CivicProof
+        </span>
+
+        <span
+          class="text-[10px] mono block mt-0.5"
+          style="color:var(--faint)"
+        >
+          Proof before "resolved."
+        </span>
+
+      </div>
+
+    </div>
+
+    <nav
+      class="flex gap-1 bg-gray-50 rounded-full p-1"
+      id="tab-nav"
+    ></nav>
+
+  </div>
+
+</header>
+
+
+<!-- ============================================================
+     MAIN
+============================================================ -->
+
+<main
+  id="app"
+  class="max-w-6xl mx-auto px-6 py-8"
+></main>
+
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+
+<footer
+  class="max-w-6xl mx-auto px-6 py-10 text-xs text-gray-400 flex justify-between"
+>
+
+  <span>
+    CivicProof — demo build. Data lives only in this browser session.
+  </span>
+
+  <span class="italic">
+    "Don't just mark it resolved. Prove it."
+  </span>
+
+</footer>
+
+
+<script>
+
+/* ============================================================
+   STATE
+============================================================ */
+
+const state = {
+  tab:'citizen',
+  nextSeq:4821,
+  complaints:[],
+  toastId:0,
+};
+
+const CATEGORIES = [
+  'Pothole',
+  'Broken Streetlight',
+  'Water Leak',
+  'Overflowing Bin',
+  'Unsafe Road',
+  'Other'
+];
+
+const DEPARTMENTS = {
+  'Pothole':'Roads Dept.',
+  'Broken Streetlight':'Electrical Dept.',
+  'Water Leak':'Water Dept.',
+  'Overflowing Bin':'Sanitation Dept.',
+  'Unsafe Road':'Roads Dept.',
+  'Other':'General Dept.'
+};
+
+
+/* ============================================================
+   UTILITIES
+============================================================ */
+
+function fmtTime(d){
+
+  return d.toLocaleString(
+    undefined,
+    {
+      month:'short',
+      day:'numeric',
+      hour:'2-digit',
+      minute:'2-digit'
+    }
+  );
+
+}
+
+
+async function sha256Hex(input){
+
+  let buf;
+
+  if(typeof input === 'string'){
+    buf = new TextEncoder().encode(input);
+  }else{
+    buf = input;
+  }
+
+  const digest =
+    await crypto.subtle.digest('SHA-256',buf);
+
+  return Array
+    .from(new Uint8Array(digest))
+    .map(
+      b => b.toString(16).padStart(2,'0')
+    )
+    .join('');
+
+}
+
+
+function readFileAsDataURL(file){
+
+  return new Promise(
+    (resolve,reject)=>{
+
+      const r = new FileReader();
+
+      r.onload =
+        () => resolve(r.result);
+
+      r.onerror = reject;
+
+      r.readAsDataURL(file);
+
+    }
+  );
+
+}
+
+
+async function processImage(file){
+
+  if(!file) return null;
+
+  const buf =
+    await file.arrayBuffer();
+
+  const hash =
+    await sha256Hex(buf);
+
+  const dataUrl =
+    await readFileAsDataURL(file);
+
+  return {
+    hash,
+    dataUrl,
+    name:file.name
+  };
+
+}
+
+
+function toast(msg,kind='neutral'){
+
+  const id =
+    't' + (state.toastId++);
+
+  const colors = {
+
+    neutral:[
+      '#F5F4FA',
+      'var(--ink)'
+    ],
+
+    good:[
+      'var(--tint-teal)',
+      '#0B6E52'
+    ],
+
+    bad:[
+      'var(--tint-pink)',
+      'var(--pink)'
+    ],
+
+    warn:[
+      'var(--tint-amber)',
+      '#8A3A05'
+    ]
+
+  };
+
+  const [bg,fg] =
+    colors[kind] ||
+    colors.neutral;
+
+  const el =
+    document.createElement('div');
+
+  el.id = id;
+
+  el.className =
+    'toast px-4 py-3 rounded-xl text-sm font-medium shadow-lg';
+
+  el.style.background = bg;
+  el.style.color = fg;
+
+  el.textContent = msg;
+
+  document
+    .getElementById('toast-root')
+    .appendChild(el);
+
+  setTimeout(
+    () => el.remove(),
+    3200
+  );
+
+}
+
+
+function addTimeline(c,label){
+
+  c.timeline.push({
+    time:new Date(),
+    label
+  });
+
+}
+
+
+function findComplaint(id){
+
+  return state.complaints.find(
+    c => c.id === id
+  );
+
+}
+
+
+function badge(status){
+
+  const map = {
+
+    'Submitted':
+      ['tint-neutral','ink','Submitted'],
+
+    'Accepted':
+      ['tint-purple','purple','Accepted'],
+
+    'Blocked':
+      ['tint-pink','pink','Blocked'],
+
+    'FlaggedForReview':
+      ['tint-amber','amber','Flagged for review'],
+
+    'PendingVerification':
+      [
+        'tint-purple',
+        'purple',
+        'Pending citizen verification'
+      ],
+
+    'Verified':
+      [
+        'tint-teal',
+        'teal_dark',
+        'Verified resolution'
+      ],
+
+    'PartiallyVerified':
+      [
+        'tint-amber',
+        'amber',
+        'Partially fixed'
+      ],
+
+    'Disputed':
+      [
+        'tint-pink',
+        'pink',
+        'Disputed'
+      ],
+
+    'Escalated':
+      [
+        'tint-pink',
+        'pink',
+        'Escalated'
+      ]
+
+  };
+
+  const [
+    bgVar,
+    fgVar,
+    text
+  ] =
+    map[status] ||
+    map['Submitted'];
+
+  const bgHex = {
+
+    'tint-neutral':'#F5F4FA',
+    'tint-purple':'#EFEAFB',
+    'tint-pink':'#FBEAF0',
+    'tint-amber':'#FCEEE2',
+    'tint-teal':'#E3F7EF'
+
+  }[bgVar];
+
+  const fgHex = {
+
+    'ink':'#1B1B2F',
+    'purple':'#6741D9',
+    'pink':'#D6336C',
+    'amber':'#E8590C',
+    'teal_dark':'#0B6E52'
+
+  }[fgVar];
+
+  return `
+    <span
+      class="px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center"
+      style="background:${bgHex};color:${fgHex}"
+    >
+      <span
+        class="dot"
+        style="background:${fgHex}"
+      ></span>
+
+      ${text}
+    </span>
+  `;
+
+}
+
+
+function checkRow(ok,label){
+
+  const icon = ok
+
+    ? `
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#0CA678"
+        stroke-width="2.4"
+      >
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    `
+
+    : `
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#D6336C"
+        stroke-width="2.4"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    `;
+
+  return `
+    <div
+      class="flex items-center gap-2 text-sm"
+      style="color:${ok?'#0B6E52':'#D6336C'}"
+    >
+      ${icon}
+      <span>${label}</span>
+    </div>
+  `;
+
+}
+
+
+/* ============================================================
+   DEMO SEED
+============================================================ */
+
+async function seed(){
+
+  const desc =
+    'Streetlight has been dark for a week near the school crossing.';
+
+  const loc =
+    'Elm Street & 4th Ave';
+
+  const cat =
+    'Broken Streetlight';
+
+  const fp =
+    await sha256Hex(
+      desc + '|' + loc + '|' + cat
+    );
+
+  const c = {
+
+    id:
+      'CIV-2026-' +
+      (state.nextSeq++),
+
+    category:cat,
+
+    description:desc,
+
+    location:loc,
+
+    submittedAt:
+      new Date(
+        Date.now() -
+        1000*60*60*26
+      ),
+
+    beforePhoto:null,
+
+    fingerprint:fp,
+
+    status:'Submitted',
+
+    timeline:[],
+
+    resolution:null,
+
+    citizenFeedback:null
+
+  };
+
+  addTimeline(
+    c,
+    'Complaint submitted'
+  );
+
+  addTimeline(
+    c,
+    'Evidence fingerprinted'
+  );
+
+  state.complaints.unshift(c);
+
+}
+
+
+/* ============================================================
+   ACTIONS
+============================================================ */
+
+async function submitComplaint({
+  category,
+  description,
+  location,
+  file
+}){
+
+  const seqId =
+    'CIV-2026-' +
+    (state.nextSeq++);
+
+  const photo =
+    await processImage(file);
+
+  const fingerprint =
+    await sha256Hex(
+      description +
+      '|' +
+      location +
+      '|' +
+      category +
+      '|' +
+      (photo ? photo.hash : '')
+    );
+
+  const c = {
+
+    id:seqId,
+
+    category,
+
+    description,
+
+    location,
+
+    submittedAt:new Date(),
+
+    beforePhoto:photo,
+
+    fingerprint,
+
+    status:'Submitted',
+
+    timeline:[],
+
+    resolution:null,
+
+    citizenFeedback:null
+
+  };
+
+  addTimeline(
+    c,
+    'Complaint submitted'
+  );
+
+  addTimeline(
+    c,
+    'Evidence fingerprinted'
+  );
+
+  state.complaints.unshift(c);
+
+  toast(
+    `Complaint ${seqId} submitted and fingerprinted.`,
+    'good'
+  );
+
+  render();
+
+}
+
+
+function acceptComplaint(id){
+
+  const c =
+    findComplaint(id);
+
+  c.status =
+    'Accepted';
+
+  addTimeline(
+    c,
+    `Assigned to ${
+      DEPARTMENTS[c.category] ||
+      'General Dept.'
+    }`
+  );
+
+  addTimeline(
+    c,
+    'Officer accepted'
+  );
+
+  toast(
+    `${id} accepted by ${DEPARTMENTS[c.category]}.`,
+    'neutral'
+  );
+
+  render();
+
+}
+
+
+async function submitResolution(
+  id,
+  {
+    file,
+    note,
+    location
+  }
+){
+
+  const c =
+    findComplaint(id);
+
+  const photo =
+    await processImage(file);
+
+  const evidenceComplete =
+    !!photo &&
+    note.trim().length > 0;
+
+  if(!evidenceComplete){
+
+    c.status =
+      'Blocked';
+
+    addTimeline(
+      c,
+      'Officer clicked "Mark Resolved" — blocked, proof required'
+    );
+
+    toast(
+      'Blocked — after photo and resolution note are required.',
+      'bad'
+    );
+
+    render();
+
+    return;
+
+  }
+
+  const locationConsistent =
+    location.trim().toLowerCase() ===
+    c.location.trim().toLowerCase();
+
+  const notDuplicate =
+    !c.beforePhoto ||
+    photo.hash !== c.beforePhoto.hash;
+
+  const timestampSane =
+    true;
+
+  const passed =
+    locationConsistent &&
+    notDuplicate &&
+    timestampSane;
+
+  c.resolution = {
+
+    photo,
+
+    note,
+
+    location,
+
+    submittedAt:new Date(),
+
+    checks:{
+      evidenceComplete,
+      locationConsistent,
+      notDuplicate,
+      timestampSane
+    },
+
+    passed
+
+  };
+
+  if(passed){
+
+    c.status =
+      'PendingVerification';
+
+    addTimeline(
+      c,
+      'Resolution proof submitted — verification passed'
+    );
+
+    addTimeline(
+      c,
+      'Citizen verification requested'
+    );
+
+    toast(
+      `${id}: verification passed. Awaiting citizen confirmation.`,
+      'good'
+    );
+
+  }else{
+
+    c.status =
+      'FlaggedForReview';
+
+    const reasons = [];
+
+    if(!locationConsistent)
+      reasons.push('location mismatch');
+
+    if(!notDuplicate)
+      reasons.push('duplicate evidence');
+
+    addTimeline(
+      c,
+      'Resolution proof submitted — flagged (' +
+      reasons.join(', ') +
+      ')'
+    );
+
+    toast(
+      `${id}: flagged — ${reasons.join(', ')}.`,
+      'warn'
+    );
+
+  }
+
+  render();
+
+}
+
+
+function citizenFeedback(
+  id,
+  verdict
+){
+
+  const c =
+    findComplaint(id);
+
+  c.citizenFeedback =
+    verdict;
+
+  if(verdict === 'fixed'){
+
+    c.status =
+      'Verified';
+
+    addTimeline(
+      c,
+      'Citizen confirmed: issue fixed'
+    );
+
+  }else if(verdict === 'partial'){
+
+    c.status =
+      'PartiallyVerified';
+
+    addTimeline(
+      c,
+      'Citizen confirmed: partially fixed'
+    );
+
+  }else{
+
+    c.status =
+      'Disputed';
+
+    addTimeline(
+      c,
+      'Citizen disputed: still unresolved'
+    );
+
+  }
+
+  toast(
+    `Feedback recorded for ${id}.`,
+    verdict === 'unresolved'
+      ? 'bad'
+      : 'good'
+  );
+
+  render();
+
+}
+
+
+function escalate(id){
+
+  const c =
+    findComplaint(id);
+
+  c.status =
+    'Escalated';
+
+  addTimeline(
+    c,
+    'Case escalated for review — history preserved'
+  );
+
+  toast(
+    `${id} escalated.`,
+    'warn'
+  );
+
+  render();
+
+}
+
+
+/* ============================================================
+   TAMPER DEMO
+============================================================ */
+
+function tamperDescription(
+  id,
+  newDesc
+){
+
+  const c =
+    findComplaint(id);
+
+  c.description =
+    newDesc;
+
+  render();
+
+}
+
+
+async function verifyIntegrity(id){
+
+  const c =
+    findComplaint(id);
+
+  const recomputed =
+    await sha256Hex(
+      c.description +
+      '|' +
+      c.location +
+      '|' +
+      c.category +
+      '|' +
+      (
+        c.beforePhoto
+          ? c.beforePhoto.hash
+          : ''
+      )
+    );
+
+  const ok =
+    recomputed ===
+    c.fingerprint;
+
+  toast(
+
+    ok
+
+      ? `${id}: integrity verified — record matches fingerprint.`
+
+      : `${id}: MISMATCH — record does not match original fingerprint!`,
+
+    ok
+      ? 'good'
+      : 'bad'
+
+  );
+
+  render();
+
+  return {
+    ok,
+    recomputed
+  };
+
+}
+
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+
+function renderNav(){
+
+  const tabs = [
+
+    ['citizen','Citizen'],
+
+    ['officer','Officer'],
+
+    ['verify','Public Verify'],
+
+    ['architecture','Architecture']
+
+  ];
+
+  document
+    .getElementById('tab-nav')
+    .innerHTML =
+
+    tabs.map(
+      ([key,label]) => `
+
+        <button
+          data-tab="${key}"
+          data-active="${
+            state.tab === key
+          }"
+
+          class="
+            tab-btn
+            px-4
+            py-1.5
+            rounded-full
+            text-sm
+            font-medium
+          "
+
+          style="${
+            state.tab === key
+
+              ? 'background:var(--ink);color:#fff'
+
+              : 'color:var(--muted)'
+          }"
+        >
+
+          ${label}
+
+        </button>
+
+      `
+    ).join('');
+
+}
+
+
+/* ============================================================
+   CITIZEN
+============================================================ */
+
+function renderCitizen(){
+
+  const mine =
+    state.complaints;
+
+  return `
+
+    <div
+      class="
+        grid
+        grid-cols-1
+        lg:grid-cols-5
+        gap-8
+      "
+    >
+
+      <div class="lg:col-span-2">
+
+        <div class="mb-5">
+
+          <div
+            class="
+              inline-flex
+              items-center
+              gap-2
+              px-3
+              py-1.5
+              rounded-full
+              text-[10px]
+              font-bold
+              mb-3
+            "
+            style="
+              background:var(--tint-teal);
+              color:var(--teal-dark);
+            "
+          >
+
+            <span
+              class="w-1.5 h-1.5 rounded-full"
+              style="background:var(--teal)"
+            ></span>
+
+            CIVIC ISSUE REPORTING
+
+          </div>
+
+          <h2
+            class="
+              font-serif-brand
+              text-2xl
+              font-bold
+              mb-1
+            "
+          >
+            Report an issue
+          </h2>
+
+          <p
+            class="text-sm"
+            style="color:var(--muted)"
+          >
+            Every submission is fingerprinted the moment it's filed.
+          </p>
+
+        </div>
+
+
+        <form
+          id="complaint-form"
+          class="
+            card
+            rounded-2xl
+            p-5
+            flex
+            flex-col
+            gap-4
+            bg-white
+          "
+        >
+
+          <div>
+
+            <label
+              class="text-xs font-semibold"
+              style="color:var(--muted)"
+            >
+              CATEGORY
+            </label>
+
+            <select
+              name="category"
+              class="
+                mt-1
+                w-full
+                border
+                border-gray-200
+                rounded-lg
+                px-3
+                py-2
+                text-sm
+              "
+            >
+
+              ${
+                CATEGORIES.map(
+                  c =>
+                    `<option value="${c}">
+                      ${c}
+                    </option>`
+                ).join('')
+              }
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label
+              class="text-xs font-semibold"
+              style="color:var(--muted)"
+            >
+              DESCRIPTION
+            </label>
+
+            <textarea
+              name="description"
+              required
+              rows="3"
+              placeholder="What's the issue?"
+              class="
+                mt-1
+                w-full
+                border
+                border-gray-200
+                rounded-lg
+                px-3
+                py-2
+                text-sm
+              "
+            ></textarea>
+
+          </div>
+
+
+          <div>
+
+            <label
+              class="text-xs font-semibold"
+              style="color:var(--muted)"
+            >
+              LOCATION
+            </label>
+
+            <input
+              name="location"
+              required
+              placeholder="e.g. Elm Street & 4th Ave"
+              class="
+                mt-1
+                w-full
+                border
+                border-gray-200
+                rounded-lg
+                px-3
+                py-2
+                text-sm
+              "
+            />
+
+          </div>
+
+
+          <div>
+
+            <label
+              class="text-xs font-semibold"
+              style="color:var(--muted)"
+            >
+              PHOTO EVIDENCE
+            </label>
+
+            <input
+              type="file"
+              name="file"
+              accept="image/*"
+              class="mt-1 w-full text-sm"
+            />
+
+          </div>
+
+
+          <button
+            type="submit"
+            class="
+              mt-1
+              rounded-lg
+              py-2.5
+              text-sm
+              font-semibold
+              text-white
+              btn-solid
+            "
+            style="background:var(--pink)"
+          >
+            Submit complaint
+          </button>
+
+        </form>
+
+      </div>
+
+
+      <div class="lg:col-span-3">
+
+        <div class="mb-5">
+
+          <div
+            class="
+              inline-flex
+              items-center
+              gap-2
+              px-3
+              py-1.5
+              rounded-full
+              text-[10px]
+              font-bold
+              mb-3
+            "
+            style="
+              background:var(--tint-purple);
+              color:var(--purple);
+            "
+          >
+
+            <span
+              class="w-1.5 h-1.5 rounded-full"
+              style="background:var(--purple)"
+            ></span>
+
+            TRACK YOUR REPORTS
+
+          </div>
+
+          <h2
+            class="
+              font-serif-brand
+              text-2xl
+              font-bold
+              mb-1
+            "
+          >
+            My reports
+          </h2>
+
+          <p
+            class="text-sm"
+            style="color:var(--muted)"
+          >
+            ${mine.length}
+            report${mine.length===1?'':'s'}
+            on file.
+          </p>
+
+        </div>
+
+
+        <div class="flex flex-col gap-3">
+
+          ${
+            mine.map(
+              renderComplaintCard
+            ).join('')
+
+            ||
+
+            `
+              <div
+                class="
+                  text-sm
+                  text-gray-400
+                  italic
+                "
+              >
+                No reports yet — submit one on the left.
+              </div>
+            `
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+function renderComplaintCard(c){
+
+  const showFeedback =
+    c.status ===
+    'PendingVerification';
+
+  return `
+
+    <div
+      class="
+        card
+        rounded-2xl
+        p-4
+        bg-white
+      "
+      data-complaint="${c.id}"
+    >
+
+      <div
+        class="
+          flex
+          items-start
+          justify-between
+          gap-3
+        "
+      >
+
+        <div>
+
+          <div
+            class="
+              flex
+              items-center
+              gap-2
+              flex-wrap
+            "
+          >
+
+            <span
+              class="mono text-xs"
+              style="color:var(--purple)"
+            >
+              ${c.id}
+            </span>
+
+            ${badge(c.status)}
+
+          </div>
+
+
+          <div
+            class="
+              font-semibold
+              text-sm
+              mt-1
+            "
+          >
+            ${c.category}
+            —
+            ${c.location}
+          </div>
+
+
+          <div
+            class="text-sm mt-0.5"
+            style="color:var(--muted)"
+          >
+            ${c.description}
+          </div>
+
+        </div>
+
+
+        ${
+          c.beforePhoto
+
+            ?
+
+            `
+              <img
+                src="${c.beforePhoto.dataUrl}"
+                class="
+                  w-16
+                  h-16
+                  object-cover
+                  rounded-lg
+                  flex-shrink-0
+                "
+              />
+            `
+
+            :
+
+            ''
+        }
+
+      </div>
+
+
+      <details class="mt-3">
+
+        <summary
+          class="
+            text-xs
+            font-semibold
+            cursor-pointer
+          "
+          style="color:var(--faint)"
+        >
+          Timeline &amp; fingerprint
+        </summary>
+
+
+        <div
+          class="
+            mt-2
+            pl-3
+            border-l-2
+            border-gray-100
+            flex
+            flex-col
+            gap-1.5
+          "
+        >
+
+          ${
+            c.timeline.map(
+              t => `
+
+                <div class="text-xs">
+
+                  <span
+                    class="mono"
+                    style="color:var(--faint)"
+                  >
+                    ${fmtTime(t.time)}
+                  </span>
+
+                  —
+                  ${t.label}
+
+                </div>
+
+              `
+            ).join('')
+          }
+
+        </div>
+
+
+        <div
+          class="
+            mt-3
+            text-xs
+            mono
+            break-all
+          "
+          style="color:var(--faint)"
+        >
+          fingerprint:
+          ${c.fingerprint}
+        </div>
+
+
+        <button
+          data-verify="${c.id}"
+          class="
+            mt-2
+            text-xs
+            font-semibold
+          "
+          style="color:var(--teal)"
+        >
+          Verify record integrity →
+        </button>
+
+      </details>
+
+
+      ${
+        showFeedback
+
+          ?
+
+          `
+
+            <div
+              class="
+                mt-3
+                pt-3
+                border-t
+                border-gray-100
+              "
+            >
+
+              <div
+                class="
+                  text-xs
+                  font-semibold
+                  mb-2
+                "
+              >
+                Was this actually fixed?
+              </div>
+
+
+              <div
+                class="
+                  flex
+                  gap-2
+                  flex-col
+                  sm:flex-row
+                "
+              >
+
+                <button
+                  data-feedback="fixed"
+                  data-id="${c.id}"
+                  class="
+                    flex-1
+                    rounded-lg
+                    py-1.5
+                    text-xs
+                    font-semibold
+                  "
+                  style="
+                    background:var(--tint-teal);
+                    color:#0B6E52
+                  "
+                >
+                  Issue fixed
+                </button>
+
+
+                <button
+                  data-feedback="partial"
+                  data-id="${c.id}"
+                  class="
+                    flex-1
+                    rounded-lg
+                    py-1.5
+                    text-xs
+                    font-semibold
+                  "
+                  style="
+                    background:var(--tint-amber);
+                    color:#8A3A05
+                  "
+                >
+                  Partially fixed
+                </button>
+
+
+                <button
+                  data-feedback="unresolved"
+                  data-id="${c.id}"
+                  class="
+                    flex-1
+                    rounded-lg
+                    py-1.5
+                    text-xs
+                    font-semibold
+                  "
+                  style="
+                    background:var(--tint-pink);
+                    color:var(--pink)
+                  "
+                >
+                  Still unresolved
+                </button>
+
+              </div>
+
+            </div>
+
+          `
+
+          :
+
+          ''
+      }
+
+
+      ${
+        c.status === 'Disputed'
+
+          ?
+
+          `
+
+            <div
+              class="
+                mt-3
+                pt-3
+                border-t
+                border-gray-100
+                flex
+                items-center
+                justify-between
+                gap-3
+              "
+            >
+
+              <span
+                class="text-xs"
+                style="color:var(--pink)"
+              >
+                Dispute recorded —
+                resolution stays in history.
+              </span>
+
+              <button
+                data-escalate="${c.id}"
+                class="
+                  text-xs
+                  font-semibold
+                  whitespace-nowrap
+                "
+                style="color:var(--purple)"
+              >
+                Escalate case →
+              </button>
+
+            </div>
+
+          `
+
+          :
+
+          ''
+      }
+
+    </div>
+
+  `;
+
+}
+
+
+/* ============================================================
+   OFFICER
+============================================================ */
+
+function renderOfficer(){
+
+  const queue =
+    state.complaints.filter(
+      c =>
+        [
+          'Submitted',
+          'Accepted',
+          'Blocked',
+          'FlaggedForReview'
+        ].includes(c.status)
+    );
+
+  return `
+
+    <div class="mb-5">
+
+      <div
+        class="
+          inline-flex
+          items-center
+          gap-2
+          px-3
+          py-1.5
+          rounded-full
+          text-[10px]
+          font-bold
+          mb-3
+        "
+        style="
+          background:var(--tint-purple);
+          color:var(--purple);
+        "
+      >
+
+        <span
+          class="w-1.5 h-1.5 rounded-full"
+          style="background:var(--purple)"
+        ></span>
+
+        OPERATIONS
+
+      </div>
+
+      <h2
+        class="
+          font-serif-brand
+          text-2xl
+          font-bold
+          mb-1
+        "
+      >
+        Officer dashboard
+      </h2>
+
+      <p
+        class="text-sm"
+        style="color:var(--muted)"
+      >
+        Resolution evidence is a requirement, not an optional attachment.
+      </p>
+
+    </div>
+
+
+    <div class="flex flex-col gap-4">
+
+      ${
+        queue.map(
+          renderOfficerCard
+        ).join('')
+
+        ||
+
+        `
+          <div
+            class="
+              text-sm
+              text-gray-400
+              italic
+            "
+          >
+            Queue is empty.
+          </div>
+        `
+      }
+
+    </div>
+
+  `;
+
+}
+
+
+function renderOfficerCard(c){
+
+  return `
+
+    <div
+      class="
+        card
+        rounded-2xl
+        p-5
+        bg-white
+      "
+    >
+
+      <div
+        class="
+          flex
+          items-center
+          justify-between
+          gap-4
+        "
+      >
+
+        <div>
+
+          <div
+            class="
+              flex
+              items-center
+              gap-2
+              flex-wrap
+            "
+          >
+
+            <span
+              class="mono text-xs"
+              style="color:var(--purple)"
+            >
+              ${c.id}
+            </span>
+
+            ${badge(c.status)}
+
+          </div>
+
+
+          <div
+            class="
+              font-semibold
+              text-sm
+              mt-1
+            "
+          >
+            ${c.category}
+            —
+            ${c.location}
+          </div>
+
+
+          <div
+            class="text-sm"
+            style="color:var(--muted)"
+          >
+            ${c.description}
+          </div>
+
+        </div>
+
+
+        ${
+          c.status === 'Submitted'
+
+            ?
+
+            `
+              <button
+                data-accept="${c.id}"
+                class="
+                  rounded-lg
+                  px-4
+                  py-2
+                  text-xs
+                  font-semibold
+                  text-white
+                  btn-solid
+                  whitespace-nowrap
+                "
+                style="background:var(--purple)"
+              >
+                Accept
+              </button>
+            `
+
+            :
+
+            ''
+        }
+
+      </div>
+
+
+      ${
+        c.resolution &&
+        !c.resolution.passed
+
+          ?
+
+          `
+
+            <div
+              class="
+                mt-3
+                rounded-lg
+                p-3
+                text-xs
+              "
+              style="
+                background:var(--tint-amber);
+                color:#8A3A05
+              "
+            >
+
+              Flagged:
+
+              ${
+                !c.resolution.checks.locationConsistent
+                  ? 'location mismatch. '
+                  : ''
+              }
+
+              ${
+                !c.resolution.checks.notDuplicate
+                  ? 'duplicate evidence reused.'
+                  : ''
+              }
+
+              Re-submit with corrected proof below.
+
+            </div>
+
+          `
+
+          :
+
+          ''
+      }
+
+
+      ${
+        [
+          'Accepted',
+          'Blocked',
+          'FlaggedForReview'
+        ].includes(c.status)
+
+          ?
+
+          `
+
+            <form
+              data-resolve="${c.id}"
+              class="
+                mt-4
+                pt-4
+                border-t
+                border-gray-100
+                grid
+                grid-cols-1
+                md:grid-cols-2
+                gap-3
+              "
+            >
+
+              <div>
+
+                <label
+                  class="text-xs font-semibold"
+                  style="color:var(--muted)"
+                >
+                  AFTER PHOTO
+                </label>
+
+                <input
+                  type="file"
+                  name="file"
+                  accept="image/*"
+                  class="mt-1 w-full text-xs"
+                />
+
+              </div>
+
+
+              <div>
+
+                <label
+                  class="text-xs font-semibold"
+                  style="color:var(--muted)"
+                >
+                  LOCATION (must match report)
+                </label>
+
+                <input
+                  name="location"
+                  value="${c.location}"
+                  class="
+                    mt-1
+                    w-full
+                    border
+                    border-gray-200
+                    rounded-lg
+                    px-3
+                    py-1.5
+                    text-xs
+                  "
+                />
+
+              </div>
+
+
+              <div class="md:col-span-2">
+
+                <label
+                  class="text-xs font-semibold"
+                  style="color:var(--muted)"
+                >
+                  RESOLUTION NOTE
+                </label>
+
+                <input
+                  name="note"
+                  placeholder="What was done?"
+                  class="
+                    mt-1
+                    w-full
+                    border
+                    border-gray-200
+                    rounded-lg
+                    px-3
+                    py-1.5
+                    text-xs
+                  "
+                />
+
+              </div>
+
+
+              <button
+                type="submit"
+                class="
+                  md:col-span-2
+                  rounded-lg
+                  py-2
+                  text-xs
+                  font-semibold
+                  text-white
+                  btn-solid
+                "
+                style="background:var(--teal)"
+              >
+                Mark resolved
+              </button>
+
+            </form>
+
+          `
+
+          :
+
+          ''
+      }
+
+    </div>
+
+  `;
+
+}
+
+
+/* ============================================================
+   PUBLIC VERIFY
+============================================================ */
+
+function renderVerify(){
+
+  return `
+
+    <div class="mb-5">
+
+      <div
+        class="
+          inline-flex
+          items-center
+          gap-2
+          px-3
+          py-1.5
+          rounded-full
+          text-[10px]
+          font-bold
+          mb-3
+        "
+        style="
+          background:var(--tint-teal);
+          color:var(--teal-dark);
+        "
+      >
+
+        <span
+          class="w-1.5 h-1.5 rounded-full"
+          style="background:var(--teal)"
+        ></span>
+
+        OPEN VERIFICATION
+
+      </div>
+
+      <h2
+        class="
+          font-serif-brand
+          text-2xl
+          font-bold
+          mb-1
+        "
+      >
+        Public verification
+      </h2>
+
+      <p
+        class="text-sm"
+        style="color:var(--muted)"
+      >
+        Search a complaint ID to see its resolution receipt.
+        Private citizen details are never shown here.
+      </p>
+
+    </div>
+
+
+    <div
+      class="
+        flex
+        gap-2
+        mb-6
+        max-w-md
+      "
+    >
+
+      <input
+        id="verify-search"
+        placeholder="e.g. CIV-2026-4821"
+        class="
+          flex-1
+          border
+          border-gray-200
+          rounded-lg
+          px-3
+          py-2
+          text-sm
+          mono
+        "
+      />
+
+      <button
+        id="verify-btn"
+        class="
+          rounded-lg
+          px-4
+          py-2
+          text-sm
+          font-semibold
+          text-white
+          btn-solid
+        "
+        style="background:var(--ink)"
+      >
+        Search
+      </button>
+
+    </div>
+
+
+    <div id="verify-result"></div>
+
+  `;
+
+}
+
+
+function renderReceipt(c){
+
+  if(!c){
+
+    return `
+      <div
+        class="
+          text-sm
+          text-gray-400
+          italic
+        "
+      >
+        No complaint found with that ID.
+      </div>
+    `;
+
+  }
+
+  const r =
+    c.resolution;
+
+  return `
+
+    <div
+      class="
+        max-w-lg
+        card
+        rounded-2xl
+        p-5
+        bg-white
+      "
+    >
+
+      <div
+        class="
+          rounded-lg
+          py-2
+          text-center
+          font-bold
+          text-sm
+          mb-4
+        "
+        style="
+          background:var(--tint-pink);
+          color:var(--pink)
+        "
+      >
+        CIVIC RESOLUTION RECEIPT
+      </div>
+
+
+      <div
+        class="
+          mono
+          text-sm
+          mb-4
+          leading-7
+        "
+      >
+
+        Complaint:
+        ${c.category}
+
+        <br/>
+
+        ID:
+        ${c.id}
+
+        <br/>
+
+        Department:
+        ${DEPARTMENTS[c.category]}
+
+        <br/>
+
+        Date:
+        ${fmtTime(c.submittedAt)}
+
+      </div>
+
+
+      ${
+        r
+
+          ?
+
+          `
+
+            <div
+              class="
+                flex
+                flex-col
+                gap-1.5
+                mb-4
+              "
+            >
+
+              ${checkRow(
+                r.checks.evidenceComplete,
+                'Before / after evidence'
+              )}
+
+              ${checkRow(
+                r.checks.locationConsistent,
+                'Location consistency'
+              )}
+
+              ${checkRow(
+                r.checks.notDuplicate,
+                'Integrity (not duplicate)'
+              )}
+
+              ${checkRow(
+                c.citizenFeedback === 'fixed',
+                'Citizen verification'
+              )}
+
+            </div>
+
+
+            <div
+              class="
+                rounded-lg
+                py-2
+                text-center
+                text-xs
+                font-bold
+              "
+              style="
+                background:${
+                  c.status === 'Verified'
+                    ? 'var(--tint-teal)'
+                    : 'var(--tint-amber)'
+                };
+
+                color:${
+                  c.status === 'Verified'
+                    ? '#0B6E52'
+                    : '#8A3A05'
+                }
+              "
+            >
+
+              STATUS:
+
+              ${
+                c.status === 'Verified'
+                  ? 'VERIFIED RESOLUTION'
+                  : c.status.toUpperCase()
+              }
+
+            </div>
+
+          `
+
+          :
+
+          `
+
+            <div
+              class="text-sm italic"
+              style="color:var(--muted)"
+            >
+              Not yet resolved —
+              no receipt available.
+            </div>
+
+          `
+      }
+
+
+      <div
+        class="
+          mt-4
+          pt-3
+          border-t
+          border-gray-100
+          text-xs
+        "
+        style="color:var(--faint)"
+      >
+        Private citizen details remain protected.
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ============================================================
+   ARCHITECTURE
+============================================================ */
+
+function renderArchitecture(){
+
+  const layers = [
+
+    [
+      'Frontend',
+      'Web app · citizen portal · officer dashboard · public verification',
+      'var(--tint-neutral)',
+      'var(--ink)'
+    ],
+
+    [
+      'Backend',
+      'Complaint API · authentication · notifications · SLA engine',
+      'var(--tint-neutral)',
+      'var(--ink)'
+    ],
+
+    [
+      'Verification',
+      'Hashing · evidence checks · AI anomaly detection · dispute workflow',
+      'var(--tint-purple)',
+      'var(--purple)'
+    ],
+
+    [
+      'Web3 layer',
+      'Blockchain transactions · immutable event hashes · smart-contract rules',
+      'var(--tint-pink)',
+      'var(--pink)'
+    ],
+
+    [
+      'Storage',
+      'Encrypted off-chain evidence + on-chain fingerprints / references',
+      'var(--tint-teal)',
+      '#0B6E52'
+    ]
+
+  ];
+
+  return `
+
+    <div class="mb-5">
+
+      <div
+        class="
+          inline-flex
+          items-center
+          gap-2
+          px-3
+          py-1.5
+          rounded-full
+          text-[10px]
+          font-bold
+          mb-3
+        "
+        style="
+          background:var(--tint-purple);
+          color:var(--purple);
+        "
+      >
+
+        <span
+          class="w-1.5 h-1.5 rounded-full"
+          style="background:var(--purple)"
+        ></span>
+
+        SYSTEM DESIGN
+
+      </div>
+
+      <h2
+        class="
+          font-serif-brand
+          text-2xl
+          font-bold
+          mb-1
+        "
+      >
+        Proposed architecture
+      </h2>
+
+      <p
+        class="text-sm"
+        style="color:var(--muted)"
+      >
+        This demo simulates the Verification layer client-side
+        with SHA-256; a production build anchors the fingerprint on-chain.
+      </p>
+
+    </div>
+
+
+    <div
+      class="
+        flex
+        flex-col
+        gap-2
+        max-w-3xl
+      "
+    >
+
+      ${
+        layers.map(
+          ([title,desc,bg,fg]) => `
+
+            <div
+              class="
+                rounded-xl
+                px-5
+                py-3.5
+              "
+              style="
+                background:${bg}
+              "
+            >
+
+              <div
+                class="font-semibold text-sm"
+                style="color:${fg}"
+              >
+                ${title}
+              </div>
+
+              <div
+                class="text-xs mt-0.5"
+                style="color:var(--muted)"
+              >
+                ${desc}
+              </div>
+
+            </div>
+
+          `
+        ).join('')
+      }
+
+    </div>
+
+
+    <div
+      class="
+        mt-6
+        max-w-3xl
+        card
+        rounded-2xl
+        p-5
+        bg-white
+      "
+    >
+
+      <div
+        class="
+          font-semibold
+          text-sm
+          mb-2
+        "
+      >
+        Try the tamper demo
+      </div>
+
+      <p
+        class="text-xs mb-3"
+        style="color:var(--muted)"
+      >
+        Complaint DNA means the record is fingerprinted at submission.
+        Edit a complaint's description below without updating its fingerprint,
+        then verify it from the Citizen tab to see the mismatch.
+      </p>
+
+      <div
+        id="tamper-controls"
+        class="
+          flex
+          flex-col
+          gap-2
+        "
+      ></div>
+
+    </div>
+
+  `;
+
+}
+
+
+function renderTamperControls(){
+
+  const c =
+    state.complaints[0];
+
+  if(!c){
+
+    return `
+      <div
+        class="
+          text-xs
+          text-gray-400
+          italic
+        "
+      >
+        No complaints yet.
+      </div>
+    `;
+
+  }
+
+  return `
+
+    <span
+      class="mono text-xs"
+      style="color:var(--purple)"
+    >
+      ${c.id}
+    </span>
+
+
+    <textarea
+      id="tamper-text"
+      rows="2"
+      class="
+        border
+        border-gray-200
+        rounded-lg
+        px-3
+        py-2
+        text-sm
+      "
+    >${c.description}</textarea>
+
+
+    <button
+      id="tamper-btn"
+      data-id="${c.id}"
+      class="
+        self-start
+        rounded-lg
+        px-4
+        py-1.5
+        text-xs
+        font-semibold
+        text-white
+        btn-solid
+      "
+      style="background:var(--amber)"
+    >
+      Save edit (simulate tampering)
+    </button>
+
+  `;
+
+}
+
+
+/* ============================================================
+   MAIN RENDER
+============================================================ */
+
+function render(){
+
+  renderNav();
+
+  const app =
+    document.getElementById('app');
+
+  if(state.tab === 'citizen'){
+
+    app.innerHTML =
+      renderCitizen();
+
+  }
+
+  else if(state.tab === 'officer'){
+
+    app.innerHTML =
+      renderOfficer();
+
+  }
+
+  else if(state.tab === 'verify'){
+
+    app.innerHTML =
+      renderVerify();
+
+  }
+
+  else if(state.tab === 'architecture'){
+
+    app.innerHTML =
+      renderArchitecture();
+
+    document
+      .getElementById('tamper-controls')
+      .innerHTML =
+      renderTamperControls();
+
+  }
+
+  app.classList.remove('fade-in');
+
+  void app.offsetWidth;
+
+  app.classList.add('fade-in');
+
+  wireEvents();
+
+}
+
+
+/* ============================================================
+   EVENT WIRING
+============================================================ */
+
+function wireEvents(){
+
+  document
+    .querySelectorAll('[data-tab]')
+    .forEach(btn => {
+
+      btn.onclick = () => {
+
+        state.tab =
+          btn.dataset.tab;
+
+        render();
+
+      };
+
+    });
+
+
+  const form =
+    document.getElementById(
+      'complaint-form'
+    );
+
+  if(form){
+
+    form.onsubmit =
+      async e => {
+
+        e.preventDefault();
+
+        const fd =
+          new FormData(form);
+
+        await submitComplaint({
+
+          category:
+            fd.get('category'),
+
+          description:
+            fd.get('description'),
+
+          location:
+            fd.get('location'),
+
+          file:
+            fd.get('file')
+
+        });
+
+      };
+
+  }
+
+
+  document
+    .querySelectorAll('[data-accept]')
+    .forEach(
+      b =>
+        b.onclick =
+          () =>
+            acceptComplaint(
+              b.dataset.accept
+            )
+    );
+
+
+  document
+    .querySelectorAll('[data-escalate]')
+    .forEach(
+      b =>
+        b.onclick =
+          () =>
+            escalate(
+              b.dataset.escalate
+            )
+    );
+
+
+  document
+    .querySelectorAll('[data-verify]')
+    .forEach(
+      b =>
+        b.onclick =
+          () =>
+            verifyIntegrity(
+              b.dataset.verify
+            )
+    );
+
+
+  document
+    .querySelectorAll('[data-feedback]')
+    .forEach(
+      b =>
+        b.onclick =
+          () =>
+            citizenFeedback(
+              b.dataset.id,
+              b.dataset.feedback
+            )
+    );
+
+
+  document
+    .querySelectorAll('[data-resolve]')
+    .forEach(f => {
+
+      f.onsubmit =
+        async e => {
+
+          e.preventDefault();
+
+          const id =
+            f.dataset.resolve;
+
+          const fd =
+            new FormData(f);
+
+          await submitResolution(
+            id,
+            {
+              file:
+                fd.get('file'),
+
+              note:
+                fd.get('note'),
+
+              location:
+                fd.get('location')
+            }
+          );
+
+        };
+
+    });
+
+
+  const vBtn =
+    document.getElementById(
+      'verify-btn'
+    );
+
+  if(vBtn){
+
+    vBtn.onclick = () => {
+
+      const q =
+        document
+          .getElementById(
+            'verify-search'
+          )
+          .value
+          .trim();
+
+      const c =
+        findComplaint(q);
+
+      document
+        .getElementById(
+          'verify-result'
+        )
+        .innerHTML =
+        renderReceipt(c);
+
+    };
+
+  }
+
+
+  const tBtn =
+    document.getElementById(
+      'tamper-btn'
+    );
+
+  if(tBtn){
+
+    tBtn.onclick = () => {
+
+      tamperDescription(
+        tBtn.dataset.id,
+
+        document
+          .getElementById(
+            'tamper-text'
+          )
+          .value
+      );
+
+      toast(
+        'Description edited without updating the fingerprint.',
+        'warn'
+      );
+
+    };
+
+  }
+
+}
+
+
+/* ============================================================
+   START APPLICATION
+============================================================ */
+
+seed().then(render);
+
+</script>
+
+</body>
+</html>
