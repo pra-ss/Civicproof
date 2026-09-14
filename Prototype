@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CivicProof — Proof Before "Resolved"</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.4.1/tailwind.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B1B2F; --muted:#63637D; --faint:#9C9CB5;
+    --pink:#D6336C; --purple:#6741D9; --teal:#0CA678; --amber:#E8590C;
+    --tint-pink:#FBEAF0; --tint-purple:#EFEAFB; --tint-teal:#E3F7EF; --tint-amber:#FCEEE2; --tint-neutral:#F5F4FA;
+    --ring: rgba(103,65,217,.18);
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:'Inter', 'Segoe UI', Arial, sans-serif; color:var(--ink); background:#fdfcfe;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    background-image:
+      radial-gradient(circle at 8% 0%, rgba(214,51,108,.05), transparent 40%),
+      radial-gradient(circle at 92% 10%, rgba(103,65,217,.06), transparent 38%);
+    background-attachment:fixed;
+  }
+  .font-serif-brand{ font-family:'Fraunces', Georgia, serif; letter-spacing:-0.01em; }
+  .mono{ font-family:'JetBrains Mono', Consolas, monospace; letter-spacing:-0.01em; }
+  ::selection{ background:var(--tint-purple); color:var(--purple); }
+  ::-webkit-scrollbar{ width:9px; height:9px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{ background:#E4E2EF; border-radius:8px; }
+  ::-webkit-scrollbar-thumb:hover{ background:#CFCBE0; }
+
+  a, button, input, select, textarea{ font-family:inherit; }
+  button{ cursor:pointer; }
+  button:active{ transform:translateY(1px); }
+  button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+    outline:none; box-shadow:0 0 0 4px var(--ring); border-color:var(--purple) !important;
+  }
+
+  input, select, textarea{ transition:box-shadow .15s ease, border-color .15s ease; }
+  input:hover, select:hover, textarea:hover{ border-color:#C9C7DA; }
+
+  .tab-btn{ transition:background .18s ease, color .18s ease, transform .12s ease; }
+  .tab-btn:hover:not([data-active="true"]){ background:rgba(0,0,0,.04); }
+
+  .card{
+    box-shadow:0 1px 2px rgba(27,27,47,.04), 0 8px 24px -12px rgba(27,27,47,.10);
+    border:1px solid #F0EFF6;
+    transition:box-shadow .22s ease, transform .22s ease, border-color .22s ease;
+  }
+  .card:hover{
+    box-shadow:0 4px 10px rgba(27,27,47,.06), 0 18px 32px -14px rgba(27,27,47,.16);
+    transform:translateY(-2px);
+    border-color:#E7E4F5;
+  }
+
+  .btn-solid{ transition:filter .15s ease, box-shadow .15s ease, transform .12s ease; box-shadow:0 1px 2px rgba(27,27,47,.08); }
+  .btn-solid:hover{ filter:brightness(1.07); box-shadow:0 6px 16px -6px rgba(27,27,47,.35); }
+
+  .fade-in{ animation:fadeIn .3s ease both; }
+  @keyframes fadeIn{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+
+  .toast{ animation:slideIn .25s cubic-bezier(.2,.8,.3,1), fadeOut .3s ease 2.9s forwards; box-shadow:0 10px 30px -10px rgba(27,27,47,.35); }
+  @keyframes slideIn{ from{ transform:translateY(-10px) scale(.97); opacity:0; } to{ transform:translateY(0) scale(1); opacity:1; } }
+  @keyframes fadeOut{ to{ opacity:0; transform:translateY(-6px); } }
+
+  details summary{ list-style:none; }
+  details summary::-webkit-details-marker{ display:none; }
+  details summary::after{ content:'›'; display:inline-block; margin-left:4px; transition:transform .2s ease; font-weight:700; }
+  details[open] summary::after{ transform:rotate(90deg); }
+
+  .dot{ display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+
+  .hero-orb{
+    position:absolute; border-radius:50%; filter:blur(0px); opacity:.55; pointer-events:none;
+  }
+
+  input[type=file]{ font-size:12.5px; }
+  input[type=file]::file-selector-button{
+    border:none; background:var(--tint-purple); color:var(--purple); padding:7px 13px; border-radius:8px;
+    font-size:12px; font-weight:600; cursor:pointer; margin-right:10px; transition:background .15s ease;
+  }
+  input[type=file]::file-selector-button:hover{ background:#E3DBFA; }
+
+  ::placeholder{ color:#B7B5C7; }
+
+  @media (max-width:640px){
+    #tab-nav{ font-size:13px; }
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<div id="toast-root" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+
+<!-- ============ HEADER / NAV ============ -->
+<header class="border-b border-gray-100 sticky top-0 bg-white/90 backdrop-blur-md z-40" style="box-shadow:0 1px 0 rgba(27,27,47,.03)">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:var(--tint-teal)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0CA678" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="leading-none">
+        <span class="font-serif-brand font-bold text-lg block">CivicProof</span>
+        <span class="text-[10px] mono block mt-0.5" style="color:var(--faint)">Proof before "resolved."</span>
+      </div>
+    </div>
+    <nav class="flex gap-1 bg-gray-50 rounded-full p-1" id="tab-nav"></nav>
+  </div>
+</header>
+
+<main id="app" class="max-w-6xl mx-auto px-6 py-8"></main>
+
+<footer class="max-w-6xl mx-auto px-6 py-10 text-xs text-gray-400 flex justify-between">
+  <span>CivicProof — demo build. Data lives only in this browser session.</span>
+  <span class="italic">"Don't just mark it resolved. Prove it."</span>
+</footer>
+
+<script>
+// ======================================================================
+// STATE
+// ======================================================================
+const state = {
+  tab: 'citizen',
+  nextSeq: 4821,
+  complaints: [],
+  toastId: 0,
+};
+
+const CATEGORIES = ['Pothole', 'Broken Streetlight', 'Water Leak', 'Overflowing Bin', 'Unsafe Road', 'Other'];
+const DEPARTMENTS = { 'Pothole':'Roads Dept.', 'Broken Streetlight':'Electrical Dept.', 'Water Leak':'Water Dept.', 'Overflowing Bin':'Sanitation Dept.', 'Unsafe Road':'Roads Dept.', 'Other':'General Dept.' };
+
+// ======================================================================
+// UTILITIES
+// ======================================================================
+function fmtTime(d){
+  return d.toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+async function sha256Hex(input){
+  let buf;
+  if (typeof input === 'string') buf = new TextEncoder().encode(input);
+  else buf = input;
+  const digest = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function readFileAsDataURL(file){
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+async function processImage(file){
+  if (!file) return null;
+  const buf = await file.arrayBuffer();
+  const hash = await sha256Hex(buf);
+  const dataUrl = await readFileAsDataURL(file);
+  return { hash, dataUrl, name: file.name };
+}
+
+function toast(msg, kind = 'neutral'){
+  const id = 't' + (state.toastId++);
+  const colors = {
+    neutral: ['#F5F4FA', 'var(--ink)'],
+    good:    ['var(--tint-teal)', '#0B6E52'],
+    bad:     ['var(--tint-pink)', 'var(--pink)'],
+    warn:    ['var(--tint-amber)', '#8A3A05'],
+  };
+  const [bg, fg] = colors[kind] || colors.neutral;
+  const el = document.createElement('div');
+  el.id = id;
+  el.className = 'toast px-4 py-3 rounded-xl text-sm font-medium shadow-lg';
+  el.style.background = bg; el.style.color = fg;
+  el.textContent = msg;
+  document.getElementById('toast-root').appendChild(el);
+  setTimeout(() => { el.remove(); }, 3200);
+}
+
+function addTimeline(c, label){
+  c.timeline.push({ time: new Date(), label });
+}
+
+function findComplaint(id){
+  return state.complaints.find(c => c.id === id);
+}
+
+function badge(status){
+  const map = {
+    'Submitted':        ['tint-neutral','ink','Submitted'],
+    'Accepted':         ['tint-purple','purple','Accepted'],
+    'Blocked':          ['tint-pink','pink','Blocked'],
+    'FlaggedForReview': ['tint-amber','amber','Flagged for review'],
+    'PendingVerification':['tint-purple','purple','Pending citizen verification'],
+    'Verified':         ['tint-teal','teal_dark','Verified resolution'],
+    'PartiallyVerified':['tint-amber','amber','Partially fixed'],
+    'Disputed':         ['tint-pink','pink','Disputed'],
+    'Escalated':        ['tint-pink','pink','Escalated'],
+  };
+  const [bgVar, fgVar, text] = map[status] || map['Submitted'];
+  const bgHex = { 'tint-neutral':'#F5F4FA','tint-purple':'#EFEAFB','tint-pink':'#FBEAF0','tint-amber':'#FCEEE2','tint-teal':'#E3F7EF' }[bgVar];
+  const fgHex = { 'ink':'#1B1B2F','purple':'#6741D9','pink':'#D6336C','amber':'#E8590C','teal_dark':'#0B6E52' }[fgVar];
+  return `<span class="px-2.5 py-1 rounded-full text-xs font-semibold inline-flex items-center" style="background:${bgHex};color:${fgHex}"><span class="dot" style="background:${fgHex}"></span>${text}</span>`;
+}
+
+function checkRow(ok, label){
+  const icon = ok
+    ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0CA678" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg>`
+    : `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D6336C" stroke-width="2.4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+  return `<div class="flex items-center gap-2 text-sm" style="color:${ok?'#0B6E52':'#D6336C'}">${icon}<span>${label}</span></div>`;
+}
+
+// ======================================================================
+// DEMO SEED (one pre-loaded example so the app isn't empty on load)
+// ======================================================================
+async function seed(){
+  const desc = 'Streetlight has been dark for a week near the school crossing.';
+  const loc = 'Elm Street & 4th Ave';
+  const cat = 'Broken Streetlight';
+  const fp = await sha256Hex(desc + '|' + loc + '|' + cat);
+  const c = {
+    id: 'CIV-2026-' + (state.nextSeq++),
+    category: cat, description: desc, location: loc,
+    submittedAt: new Date(Date.now() - 1000*60*60*26),
+    beforePhoto: null, fingerprint: fp,
+    status: 'Submitted',
+    timeline: [],
+    resolution: null,
+    citizenFeedback: null,
+  };
+  addTimeline(c, 'Complaint submitted');
+  addTimeline(c, 'Evidence fingerprinted');
+  state.complaints.unshift(c);
+}
+
+// ======================================================================
+// ACTIONS
+// ======================================================================
+async function submitComplaint({ category, description, location, file }){
+  const seqId = 'CIV-2026-' + (state.nextSeq++);
+  const photo = await processImage(file);
+  const fingerprint = await sha256Hex(description + '|' + location + '|' + category + '|' + (photo ? photo.hash : ''));
+  const c = {
+    id: seqId, category, description, location,
+    submittedAt: new Date(),
+    beforePhoto: photo, fingerprint,
+    status: 'Submitted',
+    timeline: [],
+    resolution: null,
+    citizenFeedback: null,
+  };
+  addTimeline(c, 'Complaint submitted');
+  addTimeline(c, 'Evidence fingerprinted');
+  state.complaints.unshift(c);
+  toast(`Complaint ${seqId} submitted and fingerprinted.`, 'good');
+  render();
+}
+
+function acceptComplaint(id){
+  const c = findComplaint(id);
+  c.status = 'Accepted';
+  addTimeline(c, `Assigned to ${DEPARTMENTS[c.category] || 'General Dept.'}`);
+  addTimeline(c, 'Officer accepted');
+  toast(`${id} accepted by ${DEPARTMENTS[c.category]}.`, 'neutral');
+  render();
+}
+
+async function submitResolution(id, { file, note, location }){
+  const c = findComplaint(id);
+  const photo = await processImage(file);
+
+  const evidenceComplete = !!photo && note.trim().length > 0;
+  if (!evidenceComplete){
+    c.status = 'Blocked';
+    addTimeline(c, 'Officer clicked "Mark Resolved" — blocked, proof required');
+    toast('Blocked — after photo and resolution note are required.', 'bad');
+    render();
+    return;
+  }
+
+  const locationConsistent = location.trim().toLowerCase() === c.location.trim().toLowerCase();
+  const notDuplicate = !c.beforePhoto || photo.hash !== c.beforePhoto.hash;
+  const timestampSane = true; // resolution always happens after submission in this demo
+
+  const passed = locationConsistent && notDuplicate && timestampSane;
+
+  c.resolution = {
+    photo, note, location, submittedAt: new Date(),
+    checks: { evidenceComplete, locationConsistent, notDuplicate, timestampSane },
+    passed,
+  };
+
+  if (passed){
+    c.status = 'PendingVerification';
+    addTimeline(c, 'Resolution proof submitted — verification passed');
+    addTimeline(c, 'Citizen verification requested');
+    toast(`${id}: verification passed. Awaiting citizen confirmation.`, 'good');
+  } else {
+    c.status = 'FlaggedForReview';
+    const reasons = [];
+    if (!locationConsistent) reasons.push('location mismatch');
+    if (!notDuplicate) reasons.push('duplicate evidence');
+    addTimeline(c, 'Resolution proof submitted — flagged (' + reasons.join(', ') + ')');
+    toast(`${id}: flagged — ${reasons.join(', ')}.`, 'warn');
+  }
+  render();
+}
+
+function citizenFeedback(id, verdict){
+  const c = findComplaint(id);
+  c.citizenFeedback = verdict;
+  if (verdict === 'fixed'){
+    c.status = 'Verified';
+    addTimeline(c, 'Citizen confirmed: issue fixed');
+  } else if (verdict === 'partial'){
+    c.status = 'PartiallyVerified';
+    addTimeline(c, 'Citizen confirmed: partially fixed');
+  } else {
+    c.status = 'Disputed';
+    addTimeline(c, 'Citizen disputed: still unresolved');
+  }
+  toast(`Feedback recorded for ${id}.`, verdict === 'unresolved' ? 'bad' : 'good');
+  render();
+}
+
+function escalate(id){
+  const c = findComplaint(id);
+  c.status = 'Escalated';
+  addTimeline(c, 'Case escalated for review — history preserved');
+  toast(`${id} escalated.`, 'warn');
+  render();
+}
+
+// simulate tampering, for the integrity-check demo
+function tamperDescription(id, newDesc){
+  const c = findComplaint(id);
+  c.description = newDesc; // fingerprint is NOT recomputed — this is the point
+  render();
+}
+
+async function verifyIntegrity(id){
+  const c = findComplaint(id);
+  const recomputed = await sha256Hex(c.description + '|' + c.location + '|' + c.category + '|' + (c.beforePhoto ? c.beforePhoto.hash : ''));
+  const ok = recomputed === c.fingerprint;
+  toast(ok ? `${id}: integrity verified — record matches fingerprint.` : `${id}: MISMATCH — record does not match original fingerprint!`, ok ? 'good' : 'bad');
+  render();
+  return { ok, recomputed };
+}
+
+// ======================================================================
+// RENDER: NAV
+// ======================================================================
+function renderNav(){
+  const tabs = [
+    ['citizen', 'Citizen'],
+    ['officer', 'Officer'],
+    ['verify', 'Public Verify'],
+    ['architecture', 'Architecture'],
+  ];
+  document.getElementById('tab-nav').innerHTML = tabs.map(([key, label]) => `
+    <button data-tab="${key}" data-active="${state.tab === key}" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium"
+      style="${state.tab === key ? 'background:var(--ink);color:#fff' : 'color:var(--muted)'}">
+      ${label}
+    </button>
+  `).join('');
+}
+
+// ======================================================================
+// RENDER: CITIZEN TAB
+// ======================================================================
+function renderCitizen(){
+  const mine = state.complaints;
+  return `
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <div class="lg:col-span-2">
+      <h2 class="font-serif-brand text-2xl font-bold mb-1">Report an issue</h2>
+      <p class="text-sm mb-5" style="color:var(--muted)">Every submission is fingerprinted the moment it's filed.</p>
+      <form id="complaint-form" class="card rounded-2xl p-5 flex flex-col gap-4 bg-white">
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--muted)">CATEGORY</label>
+          <select name="category" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+            ${CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--muted)">DESCRIPTION</label>
+          <textarea name="description" required rows="3" placeholder="What's the issue?" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"></textarea>
+        </div>
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--muted)">LOCATION</label>
+          <input name="location" required placeholder="e.g. Elm Street & 4th Ave" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold" style="color:var(--muted)">PHOTO EVIDENCE</label>
+          <input type="file" name="file" accept="image/*" class="mt-1 w-full text-sm" />
+        </div>
+        <button type="submit" class="mt-1 rounded-lg py-2.5 text-sm font-semibold text-white btn-solid" style="background:var(--pink)">
+          Submit complaint
+        </button>
+      </form>
+    </div>
+
+    <div class="lg:col-span-3">
+      <h2 class="font-serif-brand text-2xl font-bold mb-1">My reports</h2>
+      <p class="text-sm mb-5" style="color:var(--muted)">${mine.length} report${mine.length===1?'':'s'} on file.</p>
+      <div class="flex flex-col gap-3">
+        ${mine.map(renderComplaintCard).join('') || `<div class="text-sm text-gray-400 italic">No reports yet — submit one on the left.</div>`}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderComplaintCard(c){
+  const showFeedback = c.status === 'PendingVerification';
+  return `
+  <div class="card rounded-2xl p-4 bg-white" data-complaint="${c.id}">
+    <div class="flex items-start justify-between gap-3">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="mono text-xs" style="color:var(--purple)">${c.id}</span>
+          ${badge(c.status)}
+        </div>
+        <div class="font-semibold text-sm mt-1">${c.category} — ${c.location}</div>
+        <div class="text-sm mt-0.5" style="color:var(--muted)">${c.description}</div>
+      </div>
+      ${c.beforePhoto ? `<img src="${c.beforePhoto.dataUrl}" class="w-16 h-16 object-cover rounded-lg flex-shrink-0" />` : ''}
+    </div>
+
+    <details class="mt-3">
+      <summary class="text-xs font-semibold cursor-pointer" style="color:var(--faint)">Timeline &amp; fingerprint</summary>
+      <div class="mt-2 pl-3 border-l-2 border-gray-100 flex flex-col gap-1.5">
+        ${c.timeline.map(t => `<div class="text-xs"><span class="mono" style="color:var(--faint)">${fmtTime(t.time)}</span> — ${t.label}</div>`).join('')}
+      </div>
+      <div class="mt-3 text-xs mono break-all" style="color:var(--faint)">fingerprint: ${c.fingerprint}</div>
+      <button data-verify="${c.id}" class="mt-2 text-xs font-semibold" style="color:var(--teal)">Verify record integrity →</button>
+    </details>
+
+    ${showFeedback ? `
+      <div class="mt-3 pt-3 border-t border-gray-100">
+        <div class="text-xs font-semibold mb-2">Was this actually fixed?</div>
+        <div class="flex gap-2">
+          <button data-feedback="fixed" data-id="${c.id}" class="flex-1 rounded-lg py-1.5 text-xs font-semibold" style="background:var(--tint-teal);color:#0B6E52">Issue fixed</button>
+          <button data-feedback="partial" data-id="${c.id}" class="flex-1 rounded-lg py-1.5 text-xs font-semibold" style="background:var(--tint-amber);color:#8A3A05">Partially fixed</button>
+          <button data-feedback="unresolved" data-id="${c.id}" class="flex-1 rounded-lg py-1.5 text-xs font-semibold" style="background:var(--tint-pink);color:var(--pink)">Still unresolved</button>
+        </div>
+      </div>` : ''}
+
+    ${c.status === 'Disputed' ? `
+      <div class="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+        <span class="text-xs" style="color:var(--pink)">Dispute recorded — resolution stays in history.</span>
+        <button data-escalate="${c.id}" class="text-xs font-semibold" style="color:var(--purple)">Escalate case →</button>
+      </div>` : ''}
+  </div>`;
+}
+
+// ======================================================================
+// RENDER: OFFICER TAB
+// ======================================================================
+function renderOfficer(){
+  const queue = state.complaints.filter(c => ['Submitted','Accepted','Blocked','FlaggedForReview'].includes(c.status));
+  return `
+  <h2 class="font-serif-brand text-2xl font-bold mb-1">Officer dashboard</h2>
+  <p class="text-sm mb-5" style="color:var(--muted)">Resolution evidence is a requirement, not an optional attachment.</p>
+  <div class="flex flex-col gap-4">
+    ${queue.map(renderOfficerCard).join('') || `<div class="text-sm text-gray-400 italic">Queue is empty.</div>`}
+  </div>`;
+}
+
+function renderOfficerCard(c){
+  return `
+  <div class="card rounded-2xl p-5 bg-white">
+    <div class="flex items-center justify-between">
+      <div>
+        <span class="mono text-xs" style="color:var(--purple)">${c.id}</span> ${badge(c.status)}
+        <div class="font-semibold text-sm mt-1">${c.category} — ${c.location}</div>
+        <div class="text-sm" style="color:var(--muted)">${c.description}</div>
+      </div>
+      ${c.status === 'Submitted' ? `<button data-accept="${c.id}" class="rounded-lg px-4 py-2 text-xs font-semibold text-white btn-solid" style="background:var(--purple)">Accept</button>` : ''}
+    </div>
+
+    ${c.resolution && !c.resolution.passed ? `
+      <div class="mt-3 rounded-lg p-3 text-xs" style="background:var(--tint-amber);color:#8A3A05">
+        Flagged: ${!c.resolution.checks.locationConsistent ? 'location mismatch. ' : ''}${!c.resolution.checks.notDuplicate ? 'duplicate evidence reused.' : ''}
+        Re-submit with corrected proof below.
+      </div>` : ''}
+
+    ${(c.status === 'Accepted' || c.status === 'Blocked' || c.status === 'FlaggedForReview') ? `
+    <form data-resolve="${c.id}" class="mt-4 pt-4 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--muted)">AFTER PHOTO</label>
+        <input type="file" name="file" accept="image/*" class="mt-1 w-full text-xs" />
+      </div>
+      <div>
+        <label class="text-xs font-semibold" style="color:var(--muted)">LOCATION (must match report)</label>
+        <input name="location" value="${c.location}" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-1.5 text-xs" />
+      </div>
+      <div class="md:col-span-2">
+        <label class="text-xs font-semibold" style="color:var(--muted)">RESOLUTION NOTE</label>
+        <input name="note" placeholder="What was done?" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-1.5 text-xs" />
+      </div>
+      <button type="submit" class="md:col-span-2 rounded-lg py-2 text-xs font-semibold text-white btn-solid" style="background:var(--teal)">Mark resolved</button>
+    </form>` : ''}
+  </div>`;
+}
+
+// ======================================================================
+// RENDER: PUBLIC VERIFY TAB
+// ======================================================================
+function renderVerify(){
+  return `
+  <h2 class="font-serif-brand text-2xl font-bold mb-1">Public verification</h2>
+  <p class="text-sm mb-5" style="color:var(--muted)">Search a complaint ID to see its resolution receipt. Private citizen details are never shown here.</p>
+  <div class="flex gap-2 mb-6 max-w-md">
+    <input id="verify-search" placeholder="e.g. CIV-2026-4821" class="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm mono" />
+    <button id="verify-btn" class="rounded-lg px-4 py-2 text-sm font-semibold text-white btn-solid" style="background:var(--ink)">Search</button>
+  </div>
+  <div id="verify-result"></div>`;
+}
+
+function renderReceipt(c){
+  if (!c) return `<div class="text-sm text-gray-400 italic">No complaint found with that ID.</div>`;
+  const r = c.resolution;
+  return `
+  <div class="max-w-lg card rounded-2xl p-5 bg-white">
+    <div class="rounded-lg py-2 text-center font-bold text-sm mb-4" style="background:var(--tint-pink);color:var(--pink)">CIVIC RESOLUTION RECEIPT</div>
+    <div class="mono text-sm mb-4">
+      Complaint: ${c.category}<br/>ID: ${c.id}<br/>Department: ${DEPARTMENTS[c.category]}<br/>Date: ${fmtTime(c.submittedAt)}
+    </div>
+    ${r ? `
+      <div class="flex flex-col gap-1.5 mb-4">
+        ${checkRow(r.checks.evidenceComplete, 'Before / after evidence')}
+        ${checkRow(r.checks.locationConsistent, 'Location consistency')}
+        ${checkRow(r.checks.notDuplicate, 'Integrity (not duplicate)')}
+        ${checkRow(c.citizenFeedback === 'fixed', 'Citizen verification')}
+      </div>
+      <div class="rounded-lg py-2 text-center text-xs font-bold" style="background:${c.status==='Verified'?'var(--tint-teal)':'var(--tint-amber)'};color:${c.status==='Verified'?'#0B6E52':'#8A3A05'}">
+        STATUS: ${c.status === 'Verified' ? 'VERIFIED RESOLUTION' : c.status.toUpperCase()}
+      </div>
+    ` : `<div class="text-sm italic" style="color:var(--muted)">Not yet resolved — no receipt available.</div>`}
+    <div class="mt-4 pt-3 border-t border-gray-100 text-xs" style="color:var(--faint)">Private citizen details remain protected.</div>
+  </div>`;
+}
+
+// ======================================================================
+// RENDER: ARCHITECTURE TAB
+// ======================================================================
+function renderArchitecture(){
+  const layers = [
+    ['Frontend', 'Web app · citizen portal · officer dashboard · public verification', 'var(--tint-neutral)', 'var(--ink)'],
+    ['Backend', 'Complaint API · authentication · notifications · SLA engine', 'var(--tint-neutral)', 'var(--ink)'],
+    ['Verification', 'Hashing · evidence checks · AI anomaly detection · dispute workflow', 'var(--tint-purple)', 'var(--purple)'],
+    ['Web3 layer', 'Blockchain transactions · immutable event hashes · smart-contract rules', 'var(--tint-pink)', 'var(--pink)'],
+    ['Storage', 'Encrypted off-chain evidence + on-chain fingerprints / references', 'var(--tint-teal)', '#0B6E52'],
+  ];
+  return `
+  <h2 class="font-serif-brand text-2xl font-bold mb-1">Proposed architecture</h2>
+  <p class="text-sm mb-5" style="color:var(--muted)">This demo simulates the Verification layer client-side with SHA-256; a production build anchors the fingerprint on-chain.</p>
+  <div class="flex flex-col gap-2 max-w-3xl">
+    ${layers.map(([title, desc, bg, fg]) => `
+      <div class="rounded-xl px-5 py-3.5" style="background:${bg}">
+        <div class="font-semibold text-sm" style="color:${fg}">${title}</div>
+        <div class="text-xs mt-0.5" style="color:var(--muted)">${desc}</div>
+      </div>`).join('')}
+  </div>
+  <div class="mt-6 max-w-3xl card rounded-2xl p-5 bg-white">
+    <div class="font-semibold text-sm mb-2">Try the tamper demo</div>
+    <p class="text-xs mb-3" style="color:var(--muted)">Complaint DNA means the record is fingerprinted at submission. Edit a complaint's description below without updating its fingerprint, then verify it from the Citizen tab to see the mismatch.</p>
+    <div id="tamper-controls" class="flex flex-col gap-2"></div>
+  </div>`;
+}
+
+function renderTamperControls(){
+  const c = state.complaints[0];
+  if (!c) return '<div class="text-xs text-gray-400 italic">No complaints yet.</div>';
+  return `
+    <span class="mono text-xs" style="color:var(--purple)">${c.id}</span>
+    <textarea id="tamper-text" rows="2" class="border border-gray-200 rounded-lg px-3 py-2 text-sm">${c.description}</textarea>
+    <button id="tamper-btn" data-id="${c.id}" class="self-start rounded-lg px-4 py-1.5 text-xs font-semibold text-white btn-solid" style="background:var(--amber)">Save edit (simulate tampering)</button>
+  `;
+}
+
+// ======================================================================
+// MAIN RENDER + EVENT WIRING
+// ======================================================================
+function render(){
+  renderNav();
+  const app = document.getElementById('app');
+  if (state.tab === 'citizen') app.innerHTML = renderCitizen();
+  else if (state.tab === 'officer') app.innerHTML = renderOfficer();
+  else if (state.tab === 'verify') app.innerHTML = renderVerify();
+  else if (state.tab === 'architecture') {
+    app.innerHTML = renderArchitecture();
+    document.getElementById('tamper-controls').innerHTML = renderTamperControls();
+  }
+  app.classList.remove('fade-in');
+  void app.offsetWidth; // restart animation
+  app.classList.add('fade-in');
+  wireEvents();
+}
+
+function wireEvents(){
+  document.querySelectorAll('[data-tab]').forEach(btn => {
+    btn.onclick = () => { state.tab = btn.dataset.tab; render(); };
+  });
+
+  const form = document.getElementById('complaint-form');
+  if (form) form.onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    await submitComplaint({
+      category: fd.get('category'), description: fd.get('description'),
+      location: fd.get('location'), file: fd.get('file'),
+    });
+  };
+
+  document.querySelectorAll('[data-accept]').forEach(b => b.onclick = () => acceptComplaint(b.dataset.accept));
+  document.querySelectorAll('[data-escalate]').forEach(b => b.onclick = () => escalate(b.dataset.escalate));
+  document.querySelectorAll('[data-verify]').forEach(b => b.onclick = () => verifyIntegrity(b.dataset.verify));
+  document.querySelectorAll('[data-feedback]').forEach(b => b.onclick = () => citizenFeedback(b.dataset.id, b.dataset.feedback));
+
+  document.querySelectorAll('[data-resolve]').forEach(f => {
+    f.onsubmit = async (e) => {
+      e.preventDefault();
+      const id = f.dataset.resolve;
+      const fd = new FormData(f);
+      await submitResolution(id, { file: fd.get('file'), note: fd.get('note'), location: fd.get('location') });
+    };
+  });
+
+  const vBtn = document.getElementById('verify-btn');
+  if (vBtn) vBtn.onclick = () => {
+    const q = document.getElementById('verify-search').value.trim();
+    const c = findComplaint(q);
+    document.getElementById('verify-result').innerHTML = renderReceipt(c);
+  };
+
+  const tBtn = document.getElementById('tamper-btn');
+  if (tBtn) tBtn.onclick = () => {
+    tamperDescription(tBtn.dataset.id, document.getElementById('tamper-text').value);
+    toast('Description edited without updating the fingerprint.', 'warn');
+  };
+}
+
+seed().then(render);
+</script>
+</body>
+</html>
